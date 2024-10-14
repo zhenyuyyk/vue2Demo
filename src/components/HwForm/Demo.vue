@@ -1,5 +1,8 @@
 <template>
-  <hw-form v-model="formData" v-bind="formBind" :rules="formRules" :columns="columns" />
+  <div>
+    <p>{{formData}}</p>
+    <hw-form v-model="formData" v-bind="formBind" :rules="formRules" :columns="columns" />
+  </div>
 </template>
 
 <script>
@@ -45,7 +48,7 @@ export default {
                 <p>自定义组件123</p>
                 <p>自定义组件123</p>
                 <p>自定义组件123</p>
-                <h-input
+                <a-input
                   defaultValue={value}
                   placeholder="自定义组件中的输入框"
                   onInput={onInput}
@@ -120,7 +123,7 @@ export default {
             // options: optionsRef.value,
             service: () => {
               let serviceOptions = () => {
-                return new Promise((resolve, reject) => {
+                return new Promise((resolve) => {
                   setTimeout(() => {
                     resolve([
                       {

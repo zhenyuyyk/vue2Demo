@@ -8,17 +8,17 @@
         >
           <div v-if="item.type === 'custom'">
             <!--v-once-这部分有问题-->
-            <component :is="customRenderFun(item,value[item.name])" v-once :key="`${item.name}Custom`" />
+            <component :is="getCustomName" :customRender="item.customRender(value[item.name])"  :key="`${item.name}Custom`"/>
           </div>
           <component
-            :is="getComponentName(item.type)"
-            v-else
-            :key="`${item.name}Type`"
-            :ref="`${item.name}Type`"
-            v-model="value[item.name]"
-            :value="value[item.name]"
-            v-bind="item.attrs"
-            @input="onInput(item)"
+              :is="getComponentName(item.type)"
+              v-else
+              :key="`${item.name}Type`"
+              :ref="`${item.name}Type`"
+              :value="value[item.name]"
+              v-bind="item.attrs"
+              @input="onInput($event,item)"
+              @change="onChange($event,item)"
           />
         </a-form-model-item>
       </a-col>
@@ -27,8 +27,11 @@
 </template>
 
 <script>
+import customRender from "./customRender";
+
 export default {
   name: 'HwForm',
+  components: {customRender},
   props: {
     value: {
       type: Object,
@@ -65,7 +68,7 @@ export default {
         slider: 'a-slider',
         switch: 'a-switch',
         timePicker: 'a-time-picker',
-        timeRangePicker: 'a-time-range-picker',
+        // timeRangePicker: 'a-time-range-picker',
         datePicker: 'a-date-picker',
         rangePicker: 'a-range-picker'
       },
@@ -92,18 +95,38 @@ export default {
     })
   },
   methods: {
+    onChange(e, item) {
+      console.log(e)
+      let val = e.target.value
+      if (item.attrs && item.attrs.onChange) {
+        item.attrs.onChange()
+      }
+      this.$emit("input", {
+        ...this.value,
+        [item.name]: val
+      })
+    },
     // 解决因component重绘引发的失去焦点问题，需要手动更新获取焦点
-    onInput(item) {
+    onInput(e, item) {
+      let val = e.target.value
+      console.log(e)
       if (item.attrs && item.attrs.onInput) {
         item.attrs.onInput()
       }
-      // console.log(this.$refs[item.name])
-      this.$nextTick(() => {
-        setTimeout(() => {
-          let refEl = this.$refs[`${item.name}Type`]
-          refEl && refEl.length > 0 && refEl[0].focus ? refEl[0].focus() : ''
-        }, 0)
+      this.$emit("input", {
+        ...this.value,
+        [item.name]: val
       })
+      // console.log(this.$refs[item.name])
+      // this.$nextTick(() => {
+      //   setTimeout(() => {
+      //     let refEl = this.$refs[`${item.name}Type`]
+      //     refEl && refEl.length > 0 && refEl[0].focus ? refEl[0].focus() : ''
+      //   }, 0)
+      // })
+    },
+    getCustomName(){
+      return "customRender"
     },
     getComponentName(type) {
       // console.log(789)
@@ -114,8 +137,8 @@ export default {
       let formData = {}
       for (let i of this.columns) {
         formData[i.name] = this.value[i.name] !== null || this.value[i.name] !== undefined
-          ? this.value[i.name]
-          : null
+            ? this.value[i.name]
+            : null
         // 如果有service,执行service生成options
         this.setService(i)
       }
