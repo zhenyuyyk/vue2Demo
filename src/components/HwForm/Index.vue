@@ -1,8 +1,6 @@
 <template>
   <a-form-model ref="aForm" :model="value" v-bind="$attrs" :rules="rules">
     <a-row>
-      <p>value--{{ value }}</p>
-      <p>formData--{{ formData }}</p>
       <a-col v-for="item in columns" :key="`${item.name}Col`" :span="item.span || 24">
         <a-form-model-item :key="`${item.name}FormModel`" :ref="`${item.name}FormModel`" v-bind="item"
                            :label="item.label"
