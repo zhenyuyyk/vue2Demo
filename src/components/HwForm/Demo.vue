@@ -1,7 +1,7 @@
 <template>
   <div>
-    <p>{{formData}}</p>
-    <hw-form v-model="formData" v-bind="formBind" :rules="formRules" :columns="columns" />
+    <p>{{ formData }}</p>
+    <hw-form v-model="formData" v-bind="formBind" :rules="formRules" :columns="columns"/>
   </div>
 </template>
 
@@ -10,7 +10,7 @@ import HwForm from './Index.vue'
 
 export default {
   name: 'HwFormDemo',
-  components: { HwForm },
+  components: {HwForm},
   data() {
     return {
       formBind: {
@@ -22,13 +22,14 @@ export default {
         }
       },
       formData: {
+        zidingyi: "BBB",
         name: '',
         age: undefined,
         ziding: 'AAA'
       },
       formRules: {
         name: [
-          { required: true, message: 'Please input Activity name', trigger: 'blur' }
+          {required: true, message: 'Please input Activity name', trigger: 'blur'}
         ]
       },
       columns: [
@@ -39,21 +40,22 @@ export default {
           customRender: (val) => {
             console.log('customRender', val)
             let value = ''
-            let onInput = (val) => {
+            let onInput = (e) => {
               console.log('onInput')
-              value = val
+              value =  e.target.value
+              this.formData.zidingyi =  e.target.value
             }
             return (
-              <div>
-                <p>自定义组件123</p>
-                <p>自定义组件123</p>
-                <p>自定义组件123</p>
-                <a-input
-                  defaultValue={value}
-                  placeholder="自定义组件中的输入框"
-                  onInput={onInput}
-                />
-              </div>
+                <div>
+                  <p>自定义组件{val}</p>
+                  <p>自定义组件123</p>
+                  <p>自定义组件123</p>
+                  <a-input
+                      defaultValue={value}
+                      placeholder="自定义组件中的输入框"
+                      onInput={onInput}
+                  />
+                </div>
             )
           }
         },
@@ -89,9 +91,9 @@ export default {
           name: 'radioValue',
           attrs: {
             options: [
-              { label: 'AppleLABEL', value: 'Apple' },
-              { label: 'PearLABE', value: 'Pear' },
-              { label: 'OrangeLABE', value: 'Orange', disabled: true }
+              {label: 'AppleLABEL', value: 'Apple'},
+              {label: 'PearLABE', value: 'Pear'},
+              {label: 'OrangeLABE', value: 'Orange', disabled: true}
             ]
           }
         },
@@ -101,9 +103,9 @@ export default {
           name: 'checkboxValue',
           attrs: {
             options: [
-              { label: 'AppleLABEL', value: 'Apple' },
-              { label: 'PearLABE', value: 'Pear' },
-              { label: 'OrangeLABE', value: 'Orange', disabled: true }
+              {label: 'AppleLABEL', value: 'Apple'},
+              {label: 'PearLABE', value: 'Pear'},
+              {label: 'OrangeLABE', value: 'Orange', disabled: true}
             ]
           }
         },

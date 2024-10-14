@@ -1,21 +1,20 @@
 <template>
   <a-form-model ref="aForm" :model="value" v-bind="$attrs" :rules="rules">
     <a-row>
+      <p>value--{{ value }}</p>
+      <p>formData--{{ formData }}</p>
       <a-col v-for="item in columns" :key="`${item.name}Col`" :span="item.span || 24">
         <a-form-model-item :key="`${item.name}FormModel`" :ref="`${item.name}FormModel`" v-bind="item"
                            :label="item.label"
                            :prop="item.name"
         >
           <div v-if="item.type === 'custom'">
-            <!--v-once-这部分有问题-->
-            <component :is="getCustomName" :customRender="item.customRender(value[item.name])"  :key="`${item.name}Custom`"/>
+            <component :is="getCustomName()" :customRender="item.customRender" :value="formData[item.name]"/>
           </div>
           <component
               :is="getComponentName(item.type)"
               v-else
-              :key="`${item.name}Type`"
-              :ref="`${item.name}Type`"
-              :value="value[item.name]"
+              :value="formData[item.name]"
               v-bind="item.attrs"
               @input="onInput($event,item)"
               @change="onChange($event,item)"
@@ -54,6 +53,7 @@ export default {
   },
   data() {
     return {
+      formData: {},
       comEnum: {
         input: 'a-input',
         textarea: 'a-textarea',
@@ -72,7 +72,7 @@ export default {
         datePicker: 'a-date-picker',
         rangePicker: 'a-range-picker'
       },
-      staticNode: {}
+      staticNode: {},
     }
   },
   watch: {
@@ -96,56 +96,40 @@ export default {
   },
   methods: {
     onChange(e, item) {
-      console.log(e)
-      let val = e.target.value
-      if (item.attrs && item.attrs.onChange) {
-        item.attrs.onChange()
-      }
-      this.$emit("input", {
-        ...this.value,
-        [item.name]: val
-      })
+      this.onFunctionn("onChange", e, item)
     },
     // 解决因component重绘引发的失去焦点问题，需要手动更新获取焦点
     onInput(e, item) {
-      let val = e.target.value
-      console.log(e)
-      if (item.attrs && item.attrs.onInput) {
-        item.attrs.onInput()
-      }
-      this.$emit("input", {
-        ...this.value,
-        [item.name]: val
-      })
-      // console.log(this.$refs[item.name])
-      // this.$nextTick(() => {
-      //   setTimeout(() => {
-      //     let refEl = this.$refs[`${item.name}Type`]
-      //     refEl && refEl.length > 0 && refEl[0].focus ? refEl[0].focus() : ''
-      //   }, 0)
-      // })
+      this.onFunctionn("onInput", e, item)
     },
-    getCustomName(){
+    onFunctionn(type = "onInput", e, item) {
+      let val = ""
+      if (e && e.target && e.target.value) {
+        val = e.target.value
+      } else {
+        val = e
+      }
+      this.formData[item.name] = val
+      this.$emit("input", this.formData)
+      if (item.attrs && item.attrs[type]) {
+        item.attrs[type]()
+      }
+    },
+    getCustomName() {
       return "customRender"
     },
     getComponentName(type) {
-      // console.log(789)
       return type ? this.comEnum[type] : ''
     },
     init() {
       // 根据columns生成formData
-      let formData = {}
       for (let i of this.columns) {
-        formData[i.name] = this.value[i.name] !== null || this.value[i.name] !== undefined
-            ? this.value[i.name]
+        this.value[i.name] !== null || this.value[i.name] !== undefined
+            ? this.$set(this.formData, i.name, this.value[i.name])
             : null
         // 如果有service,执行service生成options
         this.setService(i)
       }
-      // this.value = {
-      //   ...this.value,
-      //   ...formData
-      // }
     },
     setService(i) {
       if (i.attrs && i.attrs.service) {
@@ -153,22 +137,6 @@ export default {
           let options = await i.attrs.service()
           i.attrs.options = options
         })()
-      }
-    },
-    customRenderFun(i, val) {
-      // console.log('customRenderFun')
-      if (i.type === 'custom' && i.customRender) {
-        return {
-          render() {
-            return i.customRender(val)
-          }
-        }
-      } else {
-        return {
-          render() {
-            return null
-          }
-        }
       }
     },
     // 继承a-form的Method
