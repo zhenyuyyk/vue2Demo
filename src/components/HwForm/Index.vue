@@ -74,6 +74,12 @@ export default {
     }
   },
   watch: {
+    value: {
+      handler() {
+        this.init()
+      },
+      deep: true
+    },
     columns: {
       handler() {
         for (let i of this.columns) {
