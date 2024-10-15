@@ -128,6 +128,10 @@ export default {
         // 如果有service,执行service生成options
         this.setService(i)
       }
+      this.formData = {
+        ...this.value,
+        ...this.formData
+      }
     },
     setService(i) {
       if (i.attrs && i.attrs.service) {
