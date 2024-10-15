@@ -6,6 +6,9 @@
                            :label="item.label"
                            :prop="item.name"
         >
+          <div v-if="item.customHeaderRender" slot="label">
+            <component :is="getCustomName()" :custom-render="item.customHeaderRender" :value="formData[item.name]" />
+          </div>
           <div v-if="item.type === 'custom'">
             <component :is="getCustomName()" :customRender="item.customRender" :value="formData[item.name]"/>
           </div>

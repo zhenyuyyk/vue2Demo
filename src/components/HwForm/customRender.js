@@ -12,7 +12,6 @@ export default {
         },
     },
     render() {
-        console.log(4444,this.value)
         return this.customRender(this.value)
     }
 }
