@@ -1,17 +1,17 @@
 export default {
-    name: 'customRender',
-    props: {
-        customRender: {
-            type: Function,
-            default: () => {
-                return null
-            }
-        },
-        value: {
-            default: ""
-        },
+  name: 'customRender',
+  props: {
+    customRender: {
+      type: Function,
+      default: () => {
+        return null
+      }
     },
-    render() {
-        return this.customRender(this.value)
+    value: {
+      default: ''
     }
+  },
+  render() {
+    return this.customRender(this.value)
+  }
 }

@@ -1,16 +1,13 @@
 <template>
-  <div>
-    <p>{{ formData }}</p>
-    <hw-form v-model="formData" v-bind="formBind" :rules="formRules" :columns="columns"/>
-  </div>
+  <hw-form v-model="formData" v-bind="formBind" :rules="formRules" :columns="columns" />
 </template>
 
 <script>
-import HwForm from './Index.vue'
+import HwForm from '@/components/HwForm/Index.vue'
 
 export default {
   name: 'HwFormDemo',
-  components: {HwForm},
+  components: { HwForm },
   data() {
     return {
       formBind: {
@@ -22,14 +19,13 @@ export default {
         }
       },
       formData: {
-        zidingyi: "BBB",
         name: '',
         age: undefined,
         ziding: 'AAA'
       },
       formRules: {
         name: [
-          {required: true, message: 'Please input Activity name', trigger: 'blur'}
+          { required: true, message: 'Please input Activity name', trigger: 'blur' }
         ]
       },
       columns: [
@@ -40,22 +36,21 @@ export default {
           customRender: (val) => {
             console.log('customRender', val)
             let value = ''
-            let onInput = (e) => {
+            let onInput = (val) => {
               console.log('onInput')
-              value =  e.target.value
-              this.formData.zidingyi =  e.target.value
+              value = val
             }
             return (
-                <div>
-                  <p>自定义组件{val}</p>
-                  <p>自定义组件123</p>
-                  <p>自定义组件123</p>
-                  <a-input
-                      defaultValue={value}
-                      placeholder="自定义组件中的输入框"
-                      onInput={onInput}
-                  />
-                </div>
+              <div>
+                <p>自定义组件123</p>
+                <p>自定义组件123</p>
+                <p>自定义组件123</p>
+                <h-input
+                  defaultValue={value}
+                  placeholder="自定义组件中的输入框"
+                  onInput={onInput}
+                />
+              </div>
             )
           }
         },
@@ -91,9 +86,9 @@ export default {
           name: 'radioValue',
           attrs: {
             options: [
-              {label: 'AppleLABEL', value: 'Apple'},
-              {label: 'PearLABE', value: 'Pear'},
-              {label: 'OrangeLABE', value: 'Orange', disabled: true}
+              { label: 'AppleLABEL', value: 'Apple' },
+              { label: 'PearLABE', value: 'Pear' },
+              { label: 'OrangeLABE', value: 'Orange', disabled: true }
             ]
           }
         },
@@ -103,9 +98,9 @@ export default {
           name: 'checkboxValue',
           attrs: {
             options: [
-              {label: 'AppleLABEL', value: 'Apple'},
-              {label: 'PearLABE', value: 'Pear'},
-              {label: 'OrangeLABE', value: 'Orange', disabled: true}
+              { label: 'AppleLABEL', value: 'Apple' },
+              { label: 'PearLABE', value: 'Pear' },
+              { label: 'OrangeLABE', value: 'Orange', disabled: true }
             ]
           }
         },
@@ -125,7 +120,7 @@ export default {
             // options: optionsRef.value,
             service: () => {
               let serviceOptions = () => {
-                return new Promise((resolve) => {
+                return new Promise((resolve, reject) => {
                   setTimeout(() => {
                     resolve([
                       {
